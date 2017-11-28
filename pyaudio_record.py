@@ -62,8 +62,13 @@ def add_silence(snd_data, seconds):
 
 def record():
     p = pyaudio.PyAudio()
-    stream = p.open(format=FORMAT, channels=1, rate=RATE,
-        input=True, output=True,
+    stream = p.open(
+        format=FORMAT,
+        channels=1,
+        rate=RATE,
+        input=True,
+        input_device_index=2,
+        output=True,
         frames_per_buffer=CHUNK_SIZE)
 
     num_silent = 0
