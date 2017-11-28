@@ -77,7 +77,7 @@ def record():
     r = array('h')
 
     while 1:
-        snd_data = array('h', stream.read(CHUNK_SIZE))
+        snd_data = array('h', stream.read(CHUNK_SIZE, exception_on_overflow=False))
         if byteorder == 'big':
             snd_data.byteswap()
         r.extend(snd_data)
