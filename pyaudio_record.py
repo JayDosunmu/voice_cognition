@@ -11,7 +11,7 @@ import wave
 THRESHOLD = 500
 CHUNK_SIZE = 1024
 FORMAT = pyaudio.paInt16
-RATE = 44100
+RATE = 16000
 
 def is_silent(snd_data):
     """
@@ -117,5 +117,5 @@ def record_to_file(path):
 
 if __name__ == '__main__':
     print("please speak a word into the microphone")
-    record_to_file("test.wav")
+    record_to_file("detected_speech.wav")
     print("done - result written to test.wav")

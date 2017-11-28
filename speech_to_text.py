@@ -8,7 +8,7 @@ from google.cloud.speech import types
 client = speech.SpeechClient()
 
 file_name = os.path.join(os.path.dirname(__file__),
-    'nommel_sample.wav')
+    'detected_speech.wav')
 
 with io.open(file_name, 'rb') as audio_file:
     content = audio_file.read()
