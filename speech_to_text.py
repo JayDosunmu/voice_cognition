@@ -16,11 +16,12 @@ with io.open(file_name, 'rb') as audio_file:
 
 config = types.RecognitionConfig(
     encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16,
-    sample_rate_hertz=16000,
+    # sample_rate_hertz=16000,
     language_code='en_US'
 )
 
 response = client.recognize(config, audio)
 
 for result in response.results:
-    print('Transcript: {}'.format(result.alternativees[0].transcript))
+    print(result)
+    #print('Transcript: {}'.format(result.alternativees[0].transcript))
