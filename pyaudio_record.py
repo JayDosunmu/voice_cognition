@@ -67,8 +67,8 @@ def record():
         channels=1,
         rate=RATE,
         input=True,
-        input_device_index=2,
-        output=True,
+        # input_device_index=2,
+        # output=True,
         frames_per_buffer=CHUNK_SIZE)
 
     num_silent = 0
@@ -93,6 +93,7 @@ def record():
             break
 
     sample_width = p.get_sample_size(FORMAT)
+
     stream.stop_stream()
     stream.close()
     p.terminate()
@@ -117,5 +118,5 @@ def record_to_file(path):
 
 if __name__ == '__main__':
     print("please speak a word into the microphone")
-    record_to_file("detected_speech.wav")
+    record_to_file("speech.wav")
     print("done - result written to test.wav")

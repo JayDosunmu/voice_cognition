@@ -8,7 +8,7 @@ from google.cloud.speech import types
 client = speech.SpeechClient()
 
 file_name = os.path.join(os.path.dirname(__file__),
-    'detected_speech.wav')
+    'speech.wav')
 
 with io.open(file_name, 'rb') as audio_file:
     content = audio_file.read()
@@ -16,7 +16,7 @@ with io.open(file_name, 'rb') as audio_file:
 
 config = types.RecognitionConfig(
     encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16,
-    # sample_rate_hertz=16000,
+    sample_rate_hertz=16000,
     language_code='en_US'
 )
 
