@@ -1,0 +1,22 @@
+Audio format:
+file type:     wav
+encoding:      pcm
+rate:          16k
+sample format: 16 bit
+Channels:      Mono
+
+http headers:
+    content-type: audio/wav
+
+
+Pipeline for recognition:
+for each person:
+create verification profile
+    add enrollments to v_profile (do this three times until enrollment status is complete)
+    when enrollmentStatus says enrolled
+
+
+create identification profile?
+
+
+Pipeline for Speech to text:

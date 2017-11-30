@@ -3,20 +3,21 @@ import audioop
 import wave
 
 file_name = "nommel_sample.wav"#"speech.wav"
-out_file = "speech16k.wav"
+out_file = os.path.join(os.path.dirname(__file__), "speaker_recognition/speech16k.wav")
+#os.path.join(os."speaker_recognition","speech16k.wav")
 
 
 
 def downsample(src, dst, inrate=44100, outrate=16000, inchannels=1, outchannels=1):
     if not os.path.exists(src):
-        print 'Source not found!'
+        print('Source not found!')
         return False
 
     try:
         s_read = wave.open(src, 'r')
         s_write = wave.open(dst, 'w')
     except:
-        print 'Failed to open files!'
+        print('Failed to open files!')
         return False
 
     n_frames = s_read.getnframes()
@@ -27,22 +28,21 @@ def downsample(src, dst, inrate=44100, outrate=16000, inchannels=1, outchannels=
         # if outchannels == 1:
             # converted = audioop.tomono(converted[0], 2, 1, 0)
     except:
-        print 'Failed to downsample wav'
+        print('Failed to downsample wav')
         return False
 
-    # try:
-    s_write.setparams((outchannels, 2, outrate, 0, 'NONE', 'Uncompressed'))
-    print(type(converted))
-    s_write.writeframes(converted[0])
-    # except:
-    #     print 'Failed to write wav'
-    #     return False
+    try:
+        s_write.setparams((outchannels, 2, outrate, 0, 'NONE', 'Uncompressed'))
+        s_write.writeframes(converted[0])
+    except:
+        print('Failed to write wav')
+        return False
 
     try:
         s_read.close()
         s_write.close()
     except:
-        print 'Failed to close wav files'
+        print('Failed to close wav files')
         return False
 
     return True
