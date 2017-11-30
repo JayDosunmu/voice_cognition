@@ -11,7 +11,7 @@ import wave
 THRESHOLD = 500
 CHUNK_SIZE = 1024
 FORMAT = pyaudio.paInt16
-RATE = 16000
+RATE = 44100
 
 def is_silent(snd_data):
     """
@@ -67,8 +67,13 @@ def record():
         channels=1,
         rate=RATE,
         input=True,
+<<<<<<< HEAD
         #input_device_index=2,
         output=True,
+=======
+        # input_device_index=2,
+        # output=True,
+>>>>>>> 6cc8ca972259ff5d85615a59c7db4efea8ff2b0d
         frames_per_buffer=CHUNK_SIZE)
 
     num_silent = 0
@@ -93,6 +98,7 @@ def record():
             break
 
     sample_width = p.get_sample_size(FORMAT)
+
     stream.stop_stream()
     stream.close()
     p.terminate()
@@ -117,5 +123,5 @@ def record_to_file(path):
 
 if __name__ == '__main__':
     print("please speak a word into the microphone")
-    record_to_file("detected_speech.wav")
+    record_to_file("speech.wav")
     print("done - result written to test.wav")
