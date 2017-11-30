@@ -4,6 +4,7 @@ from struct import pack
 
 import pyaudio
 import wave
+import time
 
 # Thanks to Cryo from stackoverflow:
 # stackoverflow.com/questions/82199/detect-record-audio-in-python
@@ -12,6 +13,9 @@ THRESHOLD = 500
 CHUNK_SIZE = 1024
 FORMAT = pyaudio.paInt16
 RATE = 44100
+SECONDS = 60
+SILENT_DELAY = 60
+
 
 def is_silent(snd_data):
     """
@@ -67,15 +71,16 @@ def record():
         channels=1,
         rate=RATE,
         input=True,
-        # input_device_index=2,
-        # output=True,
+        input_device_index=2,
+        output=True,
         frames_per_buffer=CHUNK_SIZE)
 
     num_silent = 0
     snd_started = False
 
     r = array('h')
-
+    t_start = time.time()
+    t_last = t_start
     while 1:
         snd_data = array('h', stream.read(CHUNK_SIZE, exception_on_overflow=False))
         if byteorder == 'big':
@@ -89,11 +94,14 @@ def record():
         elif not silent and not snd_started:
             snd_started = True
 
-        if snd_started and num_silent > 30:
+        t_end = time.time()
+        if t_end - t_last > 1:
+            print("tick")
+            t_last = t_end
+        if snd_started and num_silent > SILENT_DELAY or t_end - t_start > SECONDS:
             break
 
     sample_width = p.get_sample_size(FORMAT)
-
     stream.stop_stream()
     stream.close()
     p.terminate()
@@ -119,4 +127,4 @@ def record_to_file(path):
 if __name__ == '__main__':
     print("please speak a word into the microphone")
     record_to_file("speech.wav")
-    print("done - result written to test.wav")
+    print("done - result written to speech.wav")
