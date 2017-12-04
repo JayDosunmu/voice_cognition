@@ -1,11 +1,14 @@
 #! /usr/bin/python
+#import http.client, urllib2.request, urllib2.parse, urllib2.error, base64, json
 
 from sys import byteorder
 from array import array
 from struct import pack
 
+import audioop
 import pyaudio
 import wave
+import threading
 import time
 import io
 import os
@@ -17,13 +20,18 @@ from google.cloud.speech import types
 # Thanks to Cryo from stackoverflow:
 # stackoverflow.com/questions/82199/detect-record-audio-in-python
 
+#os.path.join(os."speaker_recognition","speech16k.wav")
+
 THRESHOLD = 500
 CHUNK_SIZE = 1024
 FORMAT = pyaudio.paInt16
-RATE = 16000
+RATE = 44100
 SECONDS = 10
 file_name = "speech.wav"
+out_file = os.path.join(os.path.dirname(__file__), "speaker_recognition/speech16k.wav")
 
+text = None
+speaker = None
 
 def is_silent(snd_data):
     """
@@ -158,15 +166,95 @@ def speech_to_text(file_name):
     return response.results.alternatives[0]
 
 
+def downsample(src, dst, inrate=44100, outrate=16000, inchannels=1, outchannels=1):
+    if not os.path.exists(src):
+        print('Source not found!')
+        return False
+
+    try:
+        s_read = wave.open(src, 'r')
+        s_write = wave.open(dst, 'w')
+    except:
+        print('Failed to open files!')
+        return False
+
+    n_frames = s_read.getnframes()
+    data = s_read.readframes(n_frames)
+
+    try:
+        converted = audioop.ratecv(data, 2, inchannels, inrate, outrate, None)
+        # if outchannels == 1:
+            # converted = audioop.tomono(converted[0], 2, 1, 0)
+    except:
+        print('Failed to downsample wav')
+        return False
+
+    try:
+        s_write.setparams((outchannels, 2, outrate, 0, 'NONE', 'Uncompressed'))
+        s_write.writeframes(converted[0])
+    except:
+        print('Failed to write wav')
+        return False
+
+    try:
+        s_read.close()
+        s_write.close()
+    except:
+        print('Failed to close wav files')
+        return False
+
+    return True
+
+
+def _record_wav():
+    print("please speak a word into the microphone")
+    record_to_file(file_name)
+    print("done - result written to speech.wav")
+    return True
+
+class SpeechToTextThread(threading.Thread):
+    def run(self):    
+        def _speech_to_text():
+            print("transcribing speech")
+            text = speech_to_text("nommel_sample.wav")
+            print("Success - speech converted to text")
+            return True
+
+
+class SpeakerRecognition(threading.Thread):
+    def _speaker_recognize():
+        print("downsampling audio file")
+        downsample(file_name, out_file)
+        print("Success - File downsampled")
+        return True
+
+        print("recognizing speaker")
+        #speaker = 
+        print("speaker recognized")
+
+    
+
 if __name__ == '__main__':
     while(1):
-        print("please speak a word into the microphone")
-        record_to_file(file_name)
-        print("done - result written to speech.wav")
+        _record_wav()
 
-        print("transcribing speech")
-        text = speech_to_text(file_name)
-        print("Success - speech converted to text")
+        speech_to_text = SpeechToTextThread()
+        speaker_recognition = SpeakerRecognition()
 
-        print("downsampling audio file")
-        print("Success - File downsampled")
+        speech_to_text.start()
+        speaker_recognition.start()
+
+        speaker_recognition.join()
+        speech_to_text.join()
+
+        if text and speaker:
+            print("Speaker: %s, Message: %s" % (speaker, text))
+        elif not speaker and text:
+            print("Speaker: Unknown, Message: %s" % text)
+        elif not text and speaker:
+            print("Speaker: %s, Message: Unknown" % speaker)
+        else:
+            print("Unable to parse input")
+
+        
+

@@ -11,12 +11,15 @@ http headers:
 
 Pipeline for recognition:
 for each person:
-create verification profile
+create verification profile?
     add enrollments to v_profile (do this three times until enrollment status is complete)
-    when enrollmentStatus says enrolled
+    when enrollmentStatus says enrolled job is complete
 
 
-create identification profile?
+create identification profile
+    add enrollments to id_profile
+
+
 
 
 Pipeline for Speech to text:
