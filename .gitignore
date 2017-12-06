@@ -1,2 +1,4 @@
 certs.txt
 ds-project-e3b6e11bcd50.json
+/.config
+/__pycache__/

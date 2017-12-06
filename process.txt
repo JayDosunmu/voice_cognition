@@ -1,0 +1,41 @@
+Process:
+
+listening:
+	Always listening
+
+	When sound is greater than threshold, and after some number of seconds, transcribe
+
+
+	if transcription is a command, run it
+	commands:
+		enroll - start process of enrolling voice
+
+		start conversation - open up a new conversation
+		sign in to conversation <name> - add name to conversation
+
+		close conversation - close current conversation
+
+	if enrollment active
+		provide name to tie with enrollment ID
+
+		collect 3 samples for identification
+
+		store results mapped to name
+
+
+
+	if conversation active
+		record message
+		determine speaker
+		
+		if speaker unknown
+			report error
+
+		if message is "sign in to conversation <name>"
+			add participant to conversation by ID
+
+		elif message is "end conversation"
+			end the conversation
+
+		else:
+			send message with id data

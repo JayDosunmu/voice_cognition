@@ -1,5 +1,0 @@
-please speak a word into the microphone
-tick
-done - result written to speech.wav
-Unable to parse input
-please speak a word into the microphone

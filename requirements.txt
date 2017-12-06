@@ -14,6 +14,7 @@ google-gax==0.15.16
 googleapis-common-protos==1.5.3
 grpcio==1.7.0
 idna==2.6
+ms-cognitive-speaker-recognition==0.1
 numpy==1.13.3
 ply==3.8
 protobuf==3.5.0.post1

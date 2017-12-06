@@ -19,7 +19,9 @@ create verification profile?
 create identification profile
     add enrollments to id_profile
 
-
+recognize speaker
+    pass recording, and determine id of speaker
 
 
 Pipeline for Speech to text:
+    send recording to API, get transcription

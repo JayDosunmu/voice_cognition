@@ -71,8 +71,8 @@ def record():
         channels=1,
         rate=RATE,
         input=True,
-        input_device_index=2,
-        output=True,
+        # input_device_index=2,
+        # output=True,
         frames_per_buffer=CHUNK_SIZE)
 
     num_silent = 0

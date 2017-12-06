@@ -17,10 +17,17 @@ from google.cloud import speech
 from google.cloud.speech import enums
 from google.cloud.speech import types
 
+from message import Message
+from recorder import Recorder
+
 # Thanks to Cryo from stackoverflow:
 # stackoverflow.com/questions/82199/detect-record-audio-in-python
 
 #os.path.join(os."speaker_recognition","speech16k.wav")
+
+url="http://chatappproject.herokuapp.com"
+
+
 
 THRESHOLD = 500
 CHUNK_SIZE = 1024
@@ -30,8 +37,8 @@ SECONDS = 10
 file_name = "speech.wav"
 out_file = os.path.join(os.path.dirname(__file__), "speaker_recognition/speech16k.wav")
 
-text = None
-speaker = None
+msg = Message(1)
+
 
 def is_silent(snd_data):
     """
@@ -87,8 +94,8 @@ def record():
         channels=1,
         rate=RATE,
         input=True,
-        input_device_index=2,
-        output=True,
+        # input_device_index=2,
+        # output=True,
         frames_per_buffer=CHUNK_SIZE)
 
     num_silent = 0
@@ -159,11 +166,10 @@ def speech_to_text(file_name):
 
     response = client.recognize(config, audio)
 
-    for result in response.results:
-        print(result)
+    # for result in response.results:
+    #     print(result)
         #print('Transcript: {}'.format(result.alternativees[0].transcript))
-
-    return response.results.alternatives[0]
+    return response.results[0].alternatives[0].transcript
 
 
 def downsample(src, dst, inrate=44100, outrate=16000, inchannels=1, outchannels=1):
@@ -206,6 +212,10 @@ def downsample(src, dst, inrate=44100, outrate=16000, inchannels=1, outchannels=
     return True
 
 
+def recognize(file_name):
+    pass
+
+
 def _record_wav():
     print("please speak a word into the microphone")
     record_to_file(file_name)
@@ -213,48 +223,78 @@ def _record_wav():
     return True
 
 class SpeechToTextThread(threading.Thread):
-    def run(self):    
-        def _speech_to_text():
-            print("transcribing speech")
-            text = speech_to_text("nommel_sample.wav")
-            print("Success - speech converted to text")
-            return True
+    def __init__(self, msg, *args, **kwargs):
+        super(SpeechToTextThread, self).__init__(*args, **kwargs)
+        
+        self.msg = msg
+  
+    def _speech_to_text(self):
+        print("transcribing speech")
+        self.msg.set_text(speech_to_text("speech.wav"))
+        print("Success - speech converted to text")
+        return True
+
+    def run(self):  
+        self._speech_to_text()
 
 
 class SpeakerRecognition(threading.Thread):
-    def _speaker_recognize():
+    def __init__(self, msg, *args, **kwargs):
+        super(SpeakerRecognition, self).__init__(*args, **kwargs)
+
+        self.msg = msg
+    
+    def _speaker_recognize(self):
         print("downsampling audio file")
         downsample(file_name, out_file)
         print("Success - File downsampled")
-        return True
 
         print("recognizing speaker")
-        #speaker = 
+        self.msg.set_speaker("speech.wav")#recognize("speech.wav"))
         print("speaker recognized")
 
-    
+        return True
+
+    def run(self):
+        self._speaker_recognize()
+
 
 if __name__ == '__main__':
+    recorder = Recorder()
     while(1):
-        _record_wav()
+        recorder.record_to_file(file_name)
 
-        speech_to_text = SpeechToTextThread()
-        speaker_recognition = SpeakerRecognition()
+        if not msg.is_processing():
+            msg = Message(1)
 
-        speech_to_text.start()
-        speaker_recognition.start()
+            msg.set_processing(True)
+            speech_to_text_thread = SpeechToTextThread(msg=msg)
+            speaker_recognition_thread = SpeakerRecognition(msg=msg)
 
-        speaker_recognition.join()
-        speech_to_text.join()
+            speech_to_text_thread.start()
 
-        if text and speaker:
-            print("Speaker: %s, Message: %s" % (speaker, text))
-        elif not speaker and text:
-            print("Speaker: Unknown, Message: %s" % text)
-        elif not text and speaker:
-            print("Speaker: %s, Message: Unknown" % speaker)
+            speech_to_text_thread.join()
+            speaker_recognition_thread.start()
+            speaker_recognition_thread.join()
+
+            # msg.set_text(text)
+            # msg.set_speaker(speaker)
+
+            msg.send_message()
+            msg.set_processing(False)
         else:
-            print("Unable to parse input")
+            print('processing')
+        # print(text)
+        # print(speaker)
+        # if text and speaker:
+        #     print("Speaker: %s, Message: %s" % (speaker, text))
+        # elif not speaker and text:
+        #     print("Speaker: Unknown, Message: %s" % text)
+        # elif not text and speaker:
+        #     print("Speaker: %s, Message: Unknown" % speaker)
+        # else:
+        #     print("Unable to parse input")
+
 
         
 
