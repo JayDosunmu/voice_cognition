@@ -46,8 +46,9 @@ class Users:
         for id, user in self.users.items():
             if user.get_v_id() == v_id:
                 return user
-
-        return None
+        user = User(v_id)
+        user.set_v_id(v_id)
+        return user
 
 
 class User:

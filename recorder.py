@@ -21,8 +21,8 @@ SILENCE_DURATION = 60
 
 
 class Recorder:
-    def record_to_file(self, file_name, minimum_time=0):
-        sample_width, data = self._record(minimum_time)
+    def record_to_file(self, file_name, minimum_time=0, max_time=59):
+        sample_width, data = self._record(minimum_time, max_time)
         data = pack('<' + ('h'*len(data)), *data)
 
         wf = wave.open(file_name, 'wb')
@@ -83,7 +83,7 @@ class Recorder:
                     break
 
 
-    def _record(self, minimum_time=0):
+    def _record(self, minimum_time=0, max_time=59):
         p = pyaudio.PyAudio()
         stream = p.open(
             format=FORMAT,
@@ -122,7 +122,7 @@ class Recorder:
             # print(snd_started)
             # print(num_silent, SILENCE_DURATION)
             # print(t_end, t_start, SECONDS)
-            if snd_started and num_silent > SILENCE_DURATION or t_end - t_start > SECONDS:
+            if snd_started and num_silent > SILENCE_DURATION or t_end - t_start > max_time:
                 if t_end - t_start > minimum_time:
                     break
 

@@ -73,7 +73,8 @@ class Controller:
                 profile = self.sr.create_profile('en-us')
                 user.set_v_id(profile.get_profile_id())
 
-                time = 60
+                time = 55
+                
                 print('Ok %s please speak continously for %ds. The prompt below is a guide' % (user.get_name(), time))
                 print(
                     "Did you ever hear the tragedy of Darth Plagueis the Wise?"

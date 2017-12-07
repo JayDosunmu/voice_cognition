@@ -34,7 +34,7 @@ if __name__ == '__main__':
         print(welcome)
 
         controller = Controller(file_name)
-        controller.clear_profiles()
+        # controller.clear_profiles()
 
         while  controller.is_running():
             controller.run()
