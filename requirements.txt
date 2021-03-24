@@ -23,6 +23,6 @@ pyasn1-modules==0.2.1
 PyAudio==0.2.11
 pycrypto==2.6.1
 requests==2.18.4
-rsa==3.4.2
+rsa==4.1
 six==1.11.0
 urllib3==1.22
